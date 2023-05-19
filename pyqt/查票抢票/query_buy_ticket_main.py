@@ -4,13 +4,15 @@ import re
 from datetime import datetime, timedelta
 import requests
 import prettytable as pt
-from PyQt6.QtWidgets import QApplication, QMessageBox, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMessageBox, QDialog
 from query_buy_ticket import Ui_Query_Buy_Ticket
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
 # 忽视该警告
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-class Query_Buy_Ticket(QMainWindow, Ui_Query_Buy_Ticket):
+
+class Query_Buy_Ticket(QDialog, Ui_Query_Buy_Ticket):
     def __init__(self):
         super(Query_Buy_Ticket, self).__init__()
         self.ticket_option = "a"
@@ -19,6 +21,7 @@ class Query_Buy_Ticket(QMainWindow, Ui_Query_Buy_Ticket):
         self.pushButton_buy.clicked.connect(self.buy_ticket)
         self.pushButton_query.clicked.connect(self.query_ticket)
 
+    @property
     def get_station_code(self):
         url = 'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js'
         response = requests.get(url, verify=False)
@@ -51,10 +54,10 @@ class Query_Buy_Ticket(QMainWindow, Ui_Query_Buy_Ticket):
 
     def buy_ticket(self):
         pass
+
     def query_ticket(self):
         from_station, to_station, train_date, ticket_option = self.validate_input()
-        station_dict = self.get_station_code()
-        # print(station_dict)
+        station_dict = self.get_station_code
         url = f'https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date={train_date}&leftTicketDTO.from_station={station_dict[from_station]}&leftTicketDTO.to_station={station_dict[to_station]}&purpose_codes=ADULT'
         headers = {
             "Cookie": "_uab_collina=167946560011909199771135; JSESSIONID=AE09B67A72C2407C1B9D79ED19F23DA8; RAIL_EXPIRATION=1679742222346; RAIL_DEVICEID=O5TwFeu4Kw_HGZF75ufekrzsLKPFJQv8vi0S8Fe5Dkit1oOkxAPbmg5itIlKjZmJVVxdwakU_EFpuNXVb_qNsVvmv23rZ5Dsjnj_vtwiTQXgaWVWlvR_bwP1dXIyByL96JbB5O29Hz28c1enfMyp1iSDP4IjbdRV; _jc_save_fromStation=%u4E0A%u6D77%2CSHH; _jc_save_wfdc_flag=dc; route=9036359bb8a8a461c164a04f8f50b252; BIGipServerotn=4040622346.64545.0000; guidesStatus=off; highContrastMode=defaltMode; cursorStatus=off; _jc_save_toStation=%u8D63%u5DDE%2CBJP; _jc_save_fromDate=2023-05-15; _jc_save_toDate=2023-05-12; BIGipServerportal=3134456074.17183.0000",
